@@ -98,7 +98,7 @@
             >;
         };
 
-        ARROW {
+        layer-2 {
             bindings = <
 &kp EXCL   &kp AT     &kp POUND          &kp DOLLAR  &kp PERCENT                        &kp CARET  &kp AMPERSAND  &kp ASTRK  &kp MINUS  &kp UNDERSCORE
 &kp GRAVE  &kp TILDE  &kp DOUBLE_QUOTES  &kp SQT     &kp          &kp          &kp      &mkp MB3   &mkp MB1       &mkp MB2   &kp EQUAL  &kp PLUS
@@ -109,12 +109,12 @@
             sensor-bindings = <&inc_dec_kp LC(PAGE_UP) LC(PAGE_DOWN)>;
         };
 
-        MOUSE {
+        layer-3 {
             bindings = <
-&trans  &trans  &trans  &trans  &trans                      &trans  &trans    &trans    &trans    &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &mkp MB1  &mkp MB3  &mkp MB2  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &mkp MB4  &trans    &mkp MB5  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                                &trans
+&kp  &kp LS(LC(TAB))     &kp PRINTSCREEN         &kp LC(TAB)        &kp                              &kp             &kp HOME    &kp           &kp END        &kp
+&kp  &kp LG(LEFT_ARROW)  &kp LG(RIGHT)           &kp LG(LC(LEFT))   &kp LG(LC(RIGHT))  &kp      &kp  &kp LEFT_ARROW  &kp DOWN    &kp UP_ARROW  &kp RIGHT      &kp
+&kp  &kp LEFT_SHIFT      &kp LS(LG(LEFT_ARROW))  &kp LG(LC(RIGHT))  &kp                &kp      &kp  &kp             &kp DELETE  &kp PAGE_UP   &kp PAGE_DOWN  &kp
+&kp  &kp                 &kp                     &kp                &kp                &kp      &kp  &kp                                                      &kp
             >;
         };
 

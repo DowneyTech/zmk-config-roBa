@@ -78,31 +78,6 @@
     };
 
     behaviors {
-        // Home Row Mods
-
-        hm: homerow_mods {
-            compatible = "zmk,behavior-hold-tap";
-            label = "HOMEROW_MODS";
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            quick-tap-ms = <150>;
-            require-prior-idle-ms = <100>; // 誤爆防止
-            flavor = "tap-preferred";
-            bindings = <&kp>, <&kp>;
-        };
-
-        // Lazy.nvim Leaderキー(Space)用: タップを最優先しレイヤー誤爆を防ぐ
-
-        lt_spc: layer_tap_space {
-            compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_SPACE";
-            #binding-cells = <2>;
-            tapping-term-ms = <250>;
-            quick-tap-ms = <200>;
-            flavor = "tap-preferred";
-            bindings = <&mo>, <&kp>;
-        };
-
         lt_to_layer_0: lt_to_layer_0 {
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_TO_0";
@@ -110,22 +85,6 @@
 
             #binding-cells = <2>;
             tapping-term-ms = <200>;
-        };
-
-        scroll_up_down: mouse_wheel_up_down {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
-
-            tap-ms = <20>;
-        };
-
-        scroll_right_left: mouse_wheel_right_left {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_LEFT>, <&msc SCRL_RIGHT>;
-
-            tap-ms = <20>;
         };
     };
 

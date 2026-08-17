@@ -136,11 +136,6 @@
             if-layers = <NAV SYM>;
             then-layer = <NUM>;
         };
-
-        sys {
-            if-layers = <MOUSE SYM>;
-            then-layer = <SYS>;
-        };
     };
 
     combos {

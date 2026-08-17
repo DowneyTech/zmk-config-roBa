@@ -1,21 +1,26 @@
 /*
- * roBa keymap  (rev.3)
+ * roBa keymap  (rev.4)
  *
- * rev.3 の変更点
- *   - マウスボタンを SCROLL レイヤーだけに集約した。
- *     オートマウスレイヤー（ボールを動かすと自動でレイヤーが変わる仕組み）は
- *     使わない。&trackball から automouse-layer を外してある。
- *     → 意図せずクリックが飛ぶ事故が原理的に発生しない。
- *   - MOUSE レイヤーそのものを削除。全9レイヤーになった。
+ * rev.4 の変更点 ─ ドラッグを「普通のマウス」と同じにする
+ *   左親指 内 を MOUSE レイヤーに変えた。MOUSE は scroll-layers に入れないので、
+ *   押している間もボールはポインタのまま。つまり
+ *       左親指 内 を押す → F（左クリック）を押しっぱなし → ボールを転がす
+ *   がそのままドラッグになる。普通のマウスと同じ操作。
+ *
+ *   ボールでのスクロールは MOUSE ＋ 右親指 内 に移動した。
+ *   （scroll-layers が有効な間はボールが必ずホイールになるドライバ仕様のため、
+ *     「スクロール中だけクリックでポインタに戻す」ことは原理的にできない）
+ *   エンコーダは従来どおり何も押さずに回すだけでスクロールする。
+ *
+ *   オートマウスレイヤーは rev.3 に続き無効。クリックは自分が押したときだけ出る。
  *
  * マウス操作の流れ
  *   ポインタ移動 : キーは何も押さない。ボールは常にポインタを動かす。
- *   クリック     : 左親指 内（SCRL）を押しながら F / D / S、または右親指 内。
- *                  押している間ボールはホイールになるが、クリック中は動かさない
- *                  ので支障はない。
- *   ドラッグ     : SCRL を押しながら G（ドラッグロック）→ SCRL を離す
- *                  → 左ボタンが押されたままボールでポインタが動く
- *                  → G か 右親指 内 でドロップ。
+ *   クリック     : 左親指 内 ＋ F（左）/ D（右）/ S（中）、または位置42（左）。
+ *   ドラッグ     : 左親指 内 ＋ F を押しっぱなし → ボールを転がす → 離してドロップ。
+ *                  長距離は G（ドラッグロック）で指を離したまま運べる。
+ *   スクロール   : 左親指 内 ＋ 右親指 内 を押しながらボールを転がす。
+ *                  またはエンコーダを回す（キー不要）。
  *
  * 日本語入力
  *   英数(IME OFF) = 位置37 / かな(IME ON) = 位置42 のタップ。
@@ -44,11 +49,12 @@
 #define MAC   1
 #define NAV   2
 #define SYM   3
-#define SCRL  4   /* トラックボールが scroll-layers で直接参照する */
-#define MNAV  5   /* MAC  + NAV  */
-#define NUM   6   /* NAV  + SYM  */
-#define SYS   7   /* SCRL + SYM  */
-#define DRAG  8   /* ドラッグロック中だけ ON。必ず最上位に置く */
+#define MOUSE 4   /* ボール = ポインタのまま。scroll-layers に入れないこと */
+#define SCRL  5   /* トラックボールが scroll-layers で直接参照する */
+#define MNAV  6   /* MAC   + NAV */
+#define NUM   7   /* NAV   + SYM */
+#define SYS   8   /* MOUSE + SYM */
+#define DRAG  9   /* ドラッグロック中だけ ON。必ず最上位に置く */
 
 / {
     behaviors {
@@ -109,7 +115,7 @@
         compatible = "zmk,conditional-layers";
         mac_nav { if-layers = <MAC NAV>;  then-layer = <MNAV>; };
         num     { if-layers = <NAV SYM>;  then-layer = <NUM>;  };
-        sys     { if-layers = <SCRL SYM>; then-layer = <SYS>;  };
+        sys     { if-layers = <MOUSE SYM>; then-layer = <SYS>; };
     };
 
     combos {
@@ -126,14 +132,14 @@
     keymap {
         compatible = "zmk,keymap";
 
-        /* 最下段: 34=Shift 35=Ctrl 36=Alt 37=英数 | 38,39=左親指 || 40,41=右親指 | 42=かな/GUI */
+        /* 最下段: 34=Shift 35=Ctrl 36=Alt 37=英数 | 38=NAV/Space 39=MOUSE || 40=BSpc 41=SYM/Enter | 42=かな/GUI */
         base_layer {
             display-name = "Base";
             bindings = <
 &kp Q  &kp W  &kp E  &kp R  &kp T                                &kp Y   &kp U  &kp I     &kp O    &kp P
 &kp A  &kp S  &kp D  &kp F  &kp G  &kp ESC          &kp MINUS    &kp H   &kp J  &kp K     &kp L    &kp SEMI
 &kp Z  &kp X  &kp C  &kp V  &kp B  &kp TAB          &kp SQT      &kp N   &kp M  &kp COMMA &kp DOT  &kp SLASH
-   &kp LSHFT &kp LCTRL &kp LALT &kp LANG2 &lt NAV SPACE &mo SCRL      &kp BSPC &lt SYM ENTER &mt LGUI LANG1
+   &kp LSHFT &kp LCTRL &kp LALT &kp LANG2 &lt NAV SPACE &mo MOUSE     &kp BSPC &lt SYM ENTER &mt LGUI LANG1
             >;
             sensor-bindings = <&enc_scrl>;
         };
@@ -178,15 +184,31 @@
         };
 
         /* 左親指 内（位置39）ホールド。マウスボタンはここに全部集約する。
-           ホールド中はボールがホイールになる。
-           位置41 は &trans のまま残すこと（SCRL + SYM で SYS を出すため）。 */
-        scroll_layer {
-            display-name = "Scroll";
+           このレイヤーは scroll-layers に入れないので、押している間もボールは
+           ポインタのまま。F を押しっぱなしでボールを転がせばそのままドラッグ。
+           位置40 = ボールをホイールに切り替える（右親指 内）。
+           位置41 は &trans のまま残すこと（MOUSE + SYM で SYS を出すため）。 */
+        mouse_layer {
+            display-name = "Mouse";
             bindings = <
 &trans     &trans      &trans      &trans      &trans                            &trans  &trans  &trans  &trans  &trans
 &trans     &mkp MCLK   &mkp RCLK   &mkp LCLK   &drag_on   &trans        &trans   &trans  &trans  &trans  &trans  &trans
 &mkp MB4   &mkp MB5    &trans      &trans      &trans     &trans        &trans   &trans  &trans  &trans  &trans  &trans
-   &trans &trans &trans &trans &trans &trans                  &mkp LCLK  &trans  &mkp RCLK
+   &trans &trans &trans &trans &trans &trans                  &mo SCRL  &trans  &mkp LCLK
+            >;
+            sensor-bindings = <&enc_scrl>;
+        };
+
+        /* MOUSE ＋ 右親指 内。ここだけボールがホイールになる。
+           クリック類は &trans で MOUSE レイヤーに素通しするので、
+           スクロール中もそのままクリックできる。 */
+        scroll_layer {
+            display-name = "Scroll";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                            &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans          &trans    &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans          &trans    &trans  &trans  &trans  &trans  &trans
+   &trans &trans &trans &trans &trans &trans                  &trans  &trans  &trans
             >;
             sensor-bindings = <&enc_hscrl>;
         };
@@ -215,7 +237,7 @@
             sensor-bindings = <&enc_vol>;
         };
 
-        /* SCROLL + SYM。滅多に使わないもの専用 */
+        /* MOUSE + SYM（左親指 内 ＋ 右親指 外）。滅多に使わないもの専用 */
         sys_layer {
             display-name = "Sys";
             bindings = <
@@ -258,8 +280,9 @@
 };
 
 /* automouse-layer は意図的に書かない = オートマウスレイヤー無効。
-   ボールは常にポインタを動かし、キーマップは勝手に変わらない。
-   復活させたい場合は automouse-layer = <N>; を足し、N 番のレイヤーを作る。 */
+   scroll-layers に SCRL だけを指定する。MOUSE をここに入れると
+   「押している間ボールがホイールに固定される」状態に戻り、
+   左クリック長押しでのドラッグができなくなるので入れないこと。 */
 &trackball {
     scroll-layers = <SCRL>;
 };

@@ -34,9 +34,9 @@
  *   row3           34 35 36 37 [38 39]      [40 41] 42
  *                  └ 左手下段 ─┘ └左親指┘   └右親指┘ └右手下段
  */
-
 /* エンコーダのスクロール量。既定10だと軽すぎる。
    マウスエミュレーションの既定値は include より「前」に定義すること */
+
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20
 
 #include <behaviors.dtsi>
@@ -65,121 +65,199 @@
            解放されない（ZMK v0.3 の behavior_macro.c の仕様）。
            DRAG は最上位レイヤーなので、同じキー位置が自動的に
            drag_on → drag_off に切り替わり、1キートグルとして機能する。 */
+
         drag_on: drag_on {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_press &mkp MB1>, <&macro_tap &tog DRAG>;
+            bindings = <&macro_press>, <&mkp MB1>, <&macro_tap>, <&tog DRAG>;
         };
+
         drag_off: drag_off {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&macro_release &mkp MB1>, <&macro_tap &tog DRAG>;
+            bindings = <&macro_release>, <&mkp MB1>, <&macro_tap>, <&tog DRAG>;
         };
 
         /* ---- ロータリーエンコーダ ---------------------------------- */
+
         enc_scrl: enc_scrl {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&msc SCRL_UP>, <&msc SCRL_DOWN>;
+
             tap-ms = <20>;
         };
+
         enc_hscrl: enc_hscrl {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&msc SCRL_RIGHT>, <&msc SCRL_LEFT>;
+
             tap-ms = <20>;
         };
+
         enc_tab: enc_tab {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&kp LC(TAB)>, <&kp LC(LS(TAB))>;
+
             tap-ms = <20>;
         };
+
         enc_vol: enc_vol {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&kp C_VOL_UP>, <&kp C_VOL_DN>;
+
             tap-ms = <20>;
         };
+
         enc_zoom: enc_zoom {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&kp LC(EQUAL)>, <&kp LC(MINUS)>;
+
             tap-ms = <20>;
         };
     };
 
     /* 親指キーが4個しかないぶんを組み合わせで補う。
        then-layer は必ず if-layers より大きい番号にすること */
+
     conditional_layers {
         compatible = "zmk,conditional-layers";
-        mac_nav { if-layers = <MAC NAV>;  then-layer = <MNAV>; };
-        num     { if-layers = <NAV SYM>;  then-layer = <NUM>;  };
-        sys     { if-layers = <MOUSE SYM>; then-layer = <SYS>; };
+
+        mac_nav {
+            if-layers = <MAC NAV>;
+            then-layer = <MNAV>;
+        };
+
+        num {
+            if-layers = <NAV SYM>;
+            then-layer = <NUM>;
+        };
+
+        sys {
+            if-layers = <MOUSE SYM>;
+            then-layer = <SYS>;
+        };
     };
 
     combos {
         compatible = "zmk,combos";
-        combo_tab   { key-positions = <11 12>; bindings = <&kp TAB>;     timeout-ms = <35>; layers = <BASE MAC>; };
-        combo_stab  { key-positions = <12 13>; bindings = <&kp LS(TAB)>; timeout-ms = <35>; layers = <BASE MAC>; };
-        combo_esc   { key-positions = <18 19>; bindings = <&kp ESC>;     timeout-ms = <35>; layers = <BASE MAC>; };
-        combo_del   { key-positions = <19 20>; bindings = <&kp DEL>;     timeout-ms = <35>; layers = <BASE MAC>; };
-        combo_lpar  { key-positions = <2 12>;  bindings = <&kp LPAR>;    timeout-ms = <35>; layers = <BASE MAC>; };
-        combo_rpar  { key-positions = <3 13>;  bindings = <&kp RPAR>;    timeout-ms = <35>; layers = <BASE MAC>; };
-        combo_caps  { key-positions = <10 21>; bindings = <&caps_word>;  timeout-ms = <50>; layers = <BASE MAC>; };
+
+        combo_tab {
+            key-positions = <11 12>;
+            bindings = <&kp TAB>;
+            timeout-ms = <35>;
+            layers = <BASE MAC>;
+        };
+
+        combo_stab {
+            key-positions = <12 13>;
+            bindings = <&kp LS(TAB)>;
+            timeout-ms = <35>;
+            layers = <BASE MAC>;
+        };
+
+        combo_esc {
+            key-positions = <18 19>;
+            bindings = <&kp ESC>;
+            timeout-ms = <35>;
+            layers = <BASE MAC>;
+        };
+
+        combo_del {
+            key-positions = <19 20>;
+            bindings = <&kp DEL>;
+            timeout-ms = <35>;
+            layers = <BASE MAC>;
+        };
+
+        combo_lpar {
+            key-positions = <2 12>;
+            bindings = <&kp LPAR>;
+            timeout-ms = <35>;
+            layers = <BASE MAC>;
+        };
+
+        combo_rpar {
+            key-positions = <3 13>;
+            bindings = <&kp RPAR>;
+            timeout-ms = <35>;
+            layers = <BASE MAC>;
+        };
+
+        combo_caps {
+            key-positions = <10 21>;
+            bindings = <&caps_word>;
+            timeout-ms = <50>;
+            layers = <BASE MAC>;
+        };
+    };
+
+    macros {
     };
 
     keymap {
         compatible = "zmk,keymap";
 
         /* 最下段: 34=Shift 35=Ctrl 36=Alt 37=英数 | 38=NAV/Space 39=MOUSE || 40=BSpc 41=SYM/Enter | 42=かな/GUI */
+
         base_layer {
             display-name = "Base";
             bindings = <
-&kp Q  &kp W  &kp E  &kp R  &kp T                                &kp Y   &kp U  &kp I     &kp O    &kp P
-&kp A  &kp S  &kp D  &kp F  &kp G  &kp ESC          &kp MINUS    &kp H   &kp J  &kp K     &kp L    &kp SEMI
-&kp Z  &kp X  &kp C  &kp V  &kp B  &kp TAB          &kp SQT      &kp N   &kp M  &kp COMMA &kp DOT  &kp SLASH
-   &kp LSHFT &kp LCTRL &kp LALT &kp LANG2 &lt NAV SPACE &mo MOUSE     &kp BSPC &lt SYM ENTER &mt LGUI LANG1
+&kp Q      &kp W      &kp E     &kp R      &kp T                                    &kp Y          &kp U  &kp I      &kp O    &kp P
+&kp A      &kp S      &kp D     &kp F      &kp G          &kp ESC        &kp MINUS  &kp H          &kp J  &kp K      &kp L    &lt 5 SEMICOLON
+&kp Z      &kp X      &kp C     &kp V      &kp B          &kp TAB        &kp SQT    &kp N          &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&kp LSHFT  &kp LCTRL  &kp LALT  &kp LANG2  &lt NAV SPACE  &mo MOUSE      &kp BSPC   &lt SYM ENTER                             &mt LGUI LANG1
             >;
+
             sensor-bindings = <&enc_scrl>;
         };
 
         /* Windows との差分だけ。SYS レイヤーの &tog MAC で切り替える。
            英数/かな(LANG2/LANG1) は macOS でもそのまま効くので上書き不要 */
+
         mac_layer {
             display-name = "Mac";
             bindings = <
-&trans  &trans  &trans  &trans  &trans                          &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans
-   &trans &kp LGUI &kp LALT &trans &trans &trans              &trans  &trans  &mt LCTRL LANG1
+&trans  &trans    &trans    &trans  &trans                      &trans  &trans  &trans  &trans  &trans
+&trans  &trans    &trans    &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans    &trans    &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &kp LGUI  &kp LALT  &trans  &trans  &trans      &trans  &trans                          &mt LCTRL LANG1
             >;
+
             sensor-bindings = <&enc_scrl>;
         };
 
         /* 左親指 外 ホールド。右手が移動キーになる。
            37 = 旧式の IME トグル（LANG1/2 が効かない環境の保険）
            親指キー(38-41)は &trans のまま残すこと（NUM/SYS の組み合わせに必要） */
+
         nav_layer {
             display-name = "Nav";
             bindings = <
-&trans  &trans  &trans  &trans  &trans                                &kp ESC   &kp HOME         &kp PG_UP    &kp PG_DN     &kp END
-&trans  &trans  &trans  &trans  &trans  &trans          &kp DEL       &kp LEFT  &kp DOWN         &kp UP       &kp RIGHT     &kp BSPC
-&trans  &trans  &trans  &trans  &trans  &trans          &kp TAB       &kp INS   &kp LC(LS(TAB))  &kp LC(TAB)  &kp LC(LEFT)  &kp LC(RIGHT)
-   &trans &trans &trans &kp LA(GRAVE) &trans &trans                 &trans  &trans  &trans
+&trans  &trans  &trans  &trans         &trans                       &kp ESC   &kp HOME         &kp PG_UP    &kp PG_DN     &kp END
+&trans  &trans  &trans  &trans         &trans  &trans      &kp DEL  &kp LEFT  &kp DOWN         &kp UP       &kp RIGHT     &kp BSPC
+&trans  &trans  &trans  &trans         &trans  &trans      &kp TAB  &kp INS   &kp LC(LS(TAB))  &kp LC(TAB)  &kp LC(LEFT)  &kp LC(RIGHT)
+&trans  &trans  &trans  &kp LA(GRAVE)  &trans  &trans      &trans   &trans                                                &trans
             >;
+
             sensor-bindings = <&enc_tab>;
         };
 
         /* 右親指 外 ホールド。左手で記号、右手はベースキーの「シフト面」を同位置に */
+
         sym_layer {
             display-name = "Sym";
             bindings = <
-&kp EXCL   &kp AT    &kp HASH   &kp DLLR  &kp PRCNT                          &kp PLUS  &trans  &trans  &trans   &trans
-&kp CARET  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RPAR   &kp EQUAL   &kp UNDER   &trans    &trans  &trans  &trans   &kp COLON
-&kp GRAVE  &kp BSLH  &kp LBKT   &kp RBKT  &kp LBRC   &kp RBRC    &kp DQT     &trans    &trans  &kp LT  &kp GT   &kp QMARK
-   &trans &trans &trans &trans &trans &trans                  &trans  &trans  &trans
+&kp EXCL   &kp AT    &kp HASH   &kp DLLR  &kp PRCNT                            &kp PLUS  &trans  &trans  &trans  &trans
+&kp CARET  &kp AMPS  &kp ASTRK  &kp LPAR  &kp RPAR   &kp EQUAL      &kp UNDER  &trans    &trans  &trans  &trans  &kp COLON
+&kp GRAVE  &kp BSLH  &kp LBKT   &kp RBKT  &kp LBRC   &kp RBRC       &kp DQT    &trans    &trans  &kp LT  &kp GT  &kp QMARK
+&trans     &trans    &trans     &trans    &trans     &trans         &trans     &trans                            &trans
             >;
+
             sensor-bindings = <&enc_zoom>;
         };
 
@@ -188,78 +266,90 @@
            ポインタのまま。F を押しっぱなしでボールを転がせばそのままドラッグ。
            位置40 = ボールをホイールに切り替える（右親指 内）。
            位置41 は &trans のまま残すこと（MOUSE + SYM で SYS を出すため）。 */
+
         mouse_layer {
             display-name = "Mouse";
             bindings = <
-&trans     &trans      &trans      &trans      &trans                            &trans  &trans  &trans  &trans  &trans
-&trans     &mkp MCLK   &mkp RCLK   &mkp LCLK   &drag_on   &trans        &trans   &trans  &trans  &trans  &trans  &trans
-&mkp MB4   &mkp MB5    &trans      &trans      &trans     &trans        &trans   &trans  &trans  &trans  &trans  &trans
-   &trans &trans &trans &trans &trans &trans                  &mo SCRL  &trans  &mkp LCLK
+&trans    &trans     &trans     &trans     &trans                          &trans  &trans  &trans  &trans  &trans
+&trans    &mkp MCLK  &mkp RCLK  &mkp LCLK  &drag_on  &trans      &trans    &trans  &trans  &trans  &trans  &trans
+&mkp MB4  &mkp MB5   &trans     &trans     &trans    &trans      &trans    &trans  &trans  &trans  &trans  &trans
+&trans    &trans     &trans     &trans     &trans    &trans      &mo SCRL  &trans                          &mkp LCLK
             >;
+
             sensor-bindings = <&enc_scrl>;
         };
 
         /* MOUSE ＋ 右親指 内。ここだけボールがホイールになる。
            クリック類は &trans で MOUSE レイヤーに素通しするので、
            スクロール中もそのままクリックできる。 */
+
         scroll_layer {
             display-name = "Scroll";
             bindings = <
-&trans  &trans  &trans  &trans  &trans                            &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans          &trans    &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans          &trans    &trans  &trans  &trans  &trans  &trans
-   &trans &trans &trans &trans &trans &trans                  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans                          &trans
             >;
+
             sensor-bindings = <&enc_hscrl>;
         };
 
         /* MAC + NAV。行頭行末と単語移動だけ Mac 流儀に上書き */
+
         mac_nav_layer {
             display-name = "MacNav";
             bindings = <
-&trans  &trans  &trans  &trans  &trans                        &trans  &kp LG(LEFT)  &trans  &trans  &kp LG(RIGHT)
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans        &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans        &trans  &kp LA(LEFT) &kp LA(RIGHT)
-   &trans &trans &trans &kp LC(SPACE) &trans &trans           &trans  &trans  &trans
+&trans  &trans  &trans  &trans         &trans                      &trans  &kp LG(LEFT)  &trans  &trans        &kp LG(RIGHT)
+&trans  &trans  &trans  &trans         &trans  &trans      &trans  &trans  &trans        &trans  &trans        &trans
+&trans  &trans  &trans  &trans         &trans  &trans      &trans  &trans  &trans        &trans  &kp LA(LEFT)  &kp LA(RIGHT)
+&trans  &trans  &trans  &kp LC(SPACE)  &trans  &trans      &trans  &trans                                      &trans
             >;
+
             sensor-bindings = <&enc_tab>;
         };
 
         /* NAV + SYM（両手の親指 外を同時ホールド）。右手テンキー・左手ファンクション */
+
         num_layer {
             display-name = "Num";
             bindings = <
-&kp F1  &kp F2  &kp F3  &kp F4  &kp F5                                    &kp ASTRK  &kp N7  &kp N8  &kp N9  &kp MINUS
-&kp F6  &kp F7  &kp F8  &kp F9  &kp F10  &kp F11        &kp EQUAL         &kp N0     &kp N4  &kp N5  &kp N6  &kp PLUS
-&kp F12 &kp C_MUTE &kp C_VOL_DN &kp C_VOL_UP &kp C_PREV &kp C_NEXT   &kp COMMA      &kp DOT    &kp N1  &kp N2  &kp N3  &kp SLASH
-   &trans &trans &trans &trans &trans &trans                  &trans  &trans  &trans
+&kp F1   &kp F2      &kp F3        &kp F4        &kp F5                                 &kp ASTRK  &kp N7  &kp N8  &kp N9  &kp MINUS
+&kp F6   &kp F7      &kp F8        &kp F9        &kp F10     &kp F11         &kp EQUAL  &kp N0     &kp N4  &kp N5  &kp N6  &kp PLUS
+&kp F12  &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP  &kp C_PREV  &kp C_NEXT      &kp COMMA  &kp DOT    &kp N1  &kp N2  &kp N3  &kp SLASH
+&trans   &trans      &trans        &trans        &trans      &trans          &trans     &trans                             &trans
             >;
+
             sensor-bindings = <&enc_vol>;
         };
 
         /* MOUSE + SYM（左親指 内 ＋ 右親指 外）。滅多に使わないもの専用 */
+
         sys_layer {
             display-name = "Sys";
             bindings = <
 &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4                      &trans  &trans  &trans  &trans  &trans
-&bt BT_CLR    &out OUT_TOG  &tog MAC      &trans        &trans   &trans         &trans     &trans  &trans  &trans  &trans  &trans
-&bootloader   &sys_reset    &trans        &trans        &trans   &trans         &trans     &trans  &trans  &trans  &trans  &trans
-   &trans &trans &trans &trans &trans &trans                  &trans  &trans  &trans
+&bt BT_CLR    &out OUT_TOG  &tog MAC      &trans        &trans        &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&bootloader   &sys_reset    &trans        &trans        &trans        &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans        &trans        &trans        &trans        &trans        &trans      &trans  &trans                          &trans
             >;
+
             sensor-bindings = <&enc_vol>;
         };
 
         /* ドラッグロック中だけ ON。左クリックが押されたままの状態。
            14(G) か 40(右親指 内) のどちらを押しても解除できる。
            それ以外は全部 &trans なので、ドラッグ中でも普通に文字は打てる */
+
         drag_layer {
             display-name = "Drag";
             bindings = <
 &trans  &trans  &trans  &trans  &trans                            &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &drag_off  &trans        &trans   &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans     &trans        &trans   &trans  &trans  &trans  &trans  &trans
-   &trans &trans &trans &trans &trans &trans                  &drag_off  &trans  &trans
+&trans  &trans  &trans  &trans  &drag_off  &trans      &trans     &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans     &trans      &trans     &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans     &trans      &drag_off  &trans                          &trans
             >;
+
             sensor-bindings = <&enc_scrl>;
         };
     };
@@ -267,6 +357,7 @@
 
 /* Hold-Tap の効き。ホームロウ Mod を使わないので require-prior-idle は入れない
    （入れると「打鍵直後に Space をホールド」が効かなくなる） */
+
 &mt {
     flavor = "balanced";
     tapping-term-ms = <200>;
@@ -283,6 +374,5 @@
    scroll-layers に SCRL だけを指定する。MOUSE をここに入れると
    「押している間ボールがホイールに固定される」状態に戻り、
    左クリック長押しでのドラッグができなくなるので入れないこと。 */
-&trackball {
-    scroll-layers = <SCRL>;
-};
+
+&trackball { scroll-layers = <SCRL>; };

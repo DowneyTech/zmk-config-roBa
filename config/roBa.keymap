@@ -124,19 +124,7 @@
     /* 親指キーが4個しかないぶんを組み合わせで補う。
        then-layer は必ず if-layers より大きい番号にすること */
 
-    conditional_layers {
-        compatible = "zmk,conditional-layers";
-
-        mac_nav {
-            if-layers = <MAC NAV>;
-            then-layer = <MNAV>;
-        };
-
-        num {
-            if-layers = <NAV SYM>;
-            then-layer = <NUM>;
-        };
-    };
+    conditional_layers { compatible = "zmk,conditional-layers"; };
 
     combos {
         compatible = "zmk,combos";
@@ -202,10 +190,10 @@
         base_layer {
             display-name = "Base";
             bindings = <
-&kp Q      &kp W      &kp E     &kp R             &kp T                                           &kp Y            &kp U  &kp I      &kp O    &kp P
-&kp A      &kp S      &kp D     &kp F             &kp G          &kp ESC               &kp MINUS  &kp H            &kp J  &kp K      &kp L    &lt 4 SEMICOLON
-&kp Z      &kp X      &kp C     &kp V             &kp B          &kp TAB               &kp SQT    &kp N            &kp M  &kp COMMA  &kp DOT  &lt 5 SLASH
-&kp LSHFT  &kp LCTRL  &kp LALT  &lt 7 LANGUAGE_2  &lt NAV SPACE  &lt 3 LANGUAGE_1      &kp BSPC   &mt RCTRL ENTER                             &lt 8 ESC
+&kp Q      &kp W         &kp E     &kp R          &kp T                                             &kp Y            &kp U  &kp I      &kp O    &kp P
+&kp A      &kp S         &kp D     &kp F          &kp G          &kp ESC          &kp MINUS         &kp H            &kp J  &kp K      &kp L    &lt 4 SEMICOLON
+&kp Z      &kp X         &kp C     &kp V          &kp B          &kp TAB          &kp SQT           &kp N            &kp M  &kp COMMA  &kp DOT  &lt 5 SLASH
+&kp LSHFT  &kp LEFT_WIN  &kp LALT  &kp BACKSPACE  &lt NAV SPACE  &lt 3 LANG2      &lt 3 LANGUAGE_1  &mt RCTRL ENTER                             &lt 8 RIGHT_ALT
             >;
 
             sensor-bindings = <&enc_scrl>;
